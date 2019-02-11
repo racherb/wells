@@ -41,6 +41,7 @@ module Wells.Internal.StateMachine.Primitive
   primitiveStateList :: StateList
   primitiveStateList = toStateList stateList 
 
+  {-@ stateList :: v:{SizeEqualTo v 10} @-}
   stateList :: [StateName]
   stateList = 
      [ "NEVERSTARTED"  
@@ -69,8 +70,29 @@ module Wells.Internal.StateMachine.Primitive
   primitivePathwayOfStates :: PathwayOfStates
   primitivePathwayOfStates =  toPathwayOfStates pwOfS
 
-  --pwOfS = fmap (\(c, l, (s, t)) -> toPathway c l (s, t)) primPathwayL
-  pwOfS :: [Pathway]
+  pwOfS = fmap (\(c, l, (s, t)) -> toPathway c l (s, t)) primPathwayL
+
+  {-@ primPathwayL :: v:{SizeEqualTo v 15} @-}
+  primPathwayL :: [(PathwayName, Limit, (Source, Target))]
+  primPathwayL = 
+               [ ("init",     0, ("NEVERSTARTED", "RUNNING"))
+               , ("finish",   0, ("RUNNING", "COMPLETED"))
+               , ("dead",     1, ("RUNNING", "DEADEND"))
+               , ("pause",    0, ("RUNNING", "PAUSED"))
+               , ("resume",   0, ("PAUSED", "RUNNING"))
+               , ("suspend",  0, ("RUNNING", "SUSPENDED"))
+               , ("restart",  0, ("SUSPENDED", "RUNNING"))
+               , ("order",    0, ("SUSPENDED", "SELFORDERING"))
+               , ("continue", 0, ("SELFORDERING", "RUNNING"))
+               , ("stop",     0, ("RUNNING", "HALTED"))
+               , ("start",    0, ("HALTED", "RUNNING"))
+               , ("error",    0, ("RUNNING", "SELFHEALING"))
+               , ("recovery", 0, ("SELFHEALING", "RUNNING"))
+               , ("support",  0, ("SELFHEALING", "UPKEEP"))
+               , ("solved",   0, ("UPKEEP", "RUNNING"))
+               ]
+  
+  {-pwOfS :: [Pathway]
   pwOfS = 
         [ toPathway "init"     0 ("NEVERSTARTED", "RUNNING")
         , toPathway "finish"   0 ("RUNNING", "COMPLETED")
@@ -88,3 +110,4 @@ module Wells.Internal.StateMachine.Primitive
         , toPathway "support"  0 ("SELFHEALING", "UPKEEP")
         , toPathway "solved"   0 ("UPKEEP", "RUNNING")
         ]
+  -}

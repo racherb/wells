@@ -44,6 +44,7 @@ module Wells.Internal.StateMachine.Types
   import qualified Data.Sequence as Sq(Seq, fromList)
   
   -- | Liquid Refinement Types and Predicates specification
+  {-@ predicate SizeEqualTo L N = (len L) = N @-}
   {-@ predicate LenGratherThan S N = (len S) >= N @-} 
   {-@ predicate NatBetween N I S 
       = (N >= 0) && (N >= I) && (N <= S)@-}
